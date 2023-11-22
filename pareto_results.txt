@@ -1,0 +1,5 @@
+Tabela de Análise de Pareto (Ordem Decrescente):
+Situação             Num Ocorrências % Contribuição       % Contribuição Acumulada 
+bobina               4               100.00               100.00                   
+
+Total de Ocorrências: 4              

@@ -48,7 +48,7 @@ class DataAnalysisApp:
         self.analyze_button = tk.Button(self.pareto_tab, text="Realizar Análise de Pareto", command=self.perform_pareto_analysis)
         self.analyze_button.pack(pady=10)
 
-        self.result_text = scrolledtext.ScrolledText(self.pareto_tab, width=60, height=15)
+        self.result_text = scrolledtext.ScrolledText(self.pareto_tab, width=80, height=20)
         self.result_text.pack(pady=10)
 
         self.pareto_chart_frame = ttk.Frame(self.pareto_tab)
@@ -110,7 +110,7 @@ class DataAnalysisApp:
         # Exibir os resultados na janela de rolagem de texto
         self.result_text.delete(1.0, tk.END)  # Limpar o conteúdo anterior
         self.result_text.insert(tk.END, "Tabela de Análise de Pareto (Ordem Decrescente):\n")
-        self.result_text.insert(tk.END, "{:<20} {:<15} {:<20} {:<25}\n".format(
+        self.result_text.insert(tk.END, "{:<20} {:<15} {:<15} {:<15}\n".format(
             "Situação", "Num Ocorrências", "% Contribuição", "% Contribuição Acumulada"
         ))
 
