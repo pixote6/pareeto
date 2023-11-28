@@ -1,0 +1,4 @@
+Situação             Num Ocorrências       Valor da Ocorrência
+capacitor            1                    400.0               
+resistor             2                    400.0               
+rele                 3                    400.0               
