@@ -12,8 +12,7 @@ class DataAnalysisApp:
         self.root.configure(bg="#FFFFCC") 
         style = ttk.Style()
         style.configure("TFrame", background='#FFFFCC')
-        style.configure("TNotebook", background="#FFFFCC")  # Cor de fundo da aba
-        style.configure("TNotebook.Tab", background="#FFFFCC")  # Cor de fundo do texto da aba
+        style.configure("TNotebook.Tab", background="#FFFFCC")  
 
 
 
@@ -31,7 +30,7 @@ class DataAnalysisApp:
 
         self.tabControl.pack(expand=1, fill="both")
 
-        # Configurar widgets para a aba de Análise de Pareto
+       
         self.condition_label = tk.Label(self.pareto_tab, text="Condição:")
         self.condition_label.pack(pady=5)
         self.condition_entry = tk.Entry(self.pareto_tab)
@@ -81,10 +80,10 @@ class DataAnalysisApp:
         self.calculate_button = tk.Button(self.central_tendency_tab, text="Realizar Cálculo", command=self.calculate_measures, width=20, height=2, bg="#FFFF00")
         self.calculate_button.pack(pady=10)
 
-        self.result_table_text = tk.Text(self.central_tendency_tab, width=80, height=10)
+        self.result_table_text = tk.Text(self.central_tendency_tab, width=80, height=25)
         self.result_table_text.pack(pady=10)
 
-        # Lista para armazenar os números inseridos
+        
         self.inserted_numbers = []
 
 
@@ -92,44 +91,44 @@ class DataAnalysisApp:
 
 
     def insert_number(self):
-        # Obter o número inserido
+        
         number_str = self.quantitative_data_entry.get()
 
-        # Converter o número para float
+        
         try:
             number = float(number_str)
-            # Adicionar o número à lista
+           
             self.inserted_numbers.append(number)
         except ValueError:
             messagebox.showerror("Erro", "Insira um número válido.")
 
-        # Limpar o campo de entrada
+        
         self.quantitative_data_entry.delete(0, tk.END)
 
     def calculate_measures(self):
-        # Verificar se há números para calcular
+        
         if not self.inserted_numbers:
             messagebox.showwarning("Aviso", "Insira pelo menos um número para realizar os cálculos.")
             return
 
-        # Calcular medidas de tendência central e dispersão
+        
         mean = statistics.mean(self.inserted_numbers)
         mode = statistics.mode(self.inserted_numbers)
         median = statistics.median(self.inserted_numbers)
         
-        # Calcular quartis
+        
         quartiles = [statistics.quantiles(self.inserted_numbers, n) for n in [0.25, 0.5, 0.75]]
 
-        # Calcular desvio padrão
+        
         std_deviation = statistics.stdev(self.inserted_numbers)
 
-        # Criar tabela de medidas
+       
         measures_table = pd.DataFrame({
             'Medida': ['Média', 'Moda', 'Mediana', '1º Quartil', '2º Quartil', '3º Quartil', 'Desvio Padrão'],
             'Valor': [mean, mode, median] + quartiles + [std_deviation]
         })
 
-        # Exibir os resultados na janela de rolagem de texto
+        
         result_text_content = "Tabela de Medidas de Tendência Central e Dispersão:\n"
         result_text_content += "{:<15} {:<15}\n".format("Medida", "Valor")
 
@@ -140,26 +139,26 @@ class DataAnalysisApp:
         self.result_table_text.insert(tk.END, result_text_content)    
        
     def add_occurrence(self):
-        # Obter as condições, quantidade de ocorrências e valor da ocorrência
+       
         condition = self.condition_entry.get()
         occurrences = self.occurrences_entry.get()
         value = self.value_entry.get()
 
-        # Converter a quantidade de ocorrências e valor para números
+        
         try:
             occurrences = int(occurrences)
         except ValueError:
-            occurrences = 0  # Defina para 0 se não for um número
+            occurrences = 0  
 
         try:
             value = float(value)
         except ValueError:
-            value = 0.0  # Defina para 0.0 se não for um número
+            value = 0.0  
 
-        # Adicionar a ocorrência à lista
+        
         self.occurrences_list.append((condition, occurrences, value))
 
-        # Limpar os campos de entrada
+        
         self.condition_entry.delete(0, tk.END)
         self.occurrences_entry.delete(0, tk.END)
         self.value_entry.delete(0, tk.END)
@@ -171,7 +170,7 @@ class DataAnalysisApp:
                 with open(file_path, 'r') as file:
                     lines = file.readlines()
                     self.occurrences_list = []
-                    for line in lines[1:]:  # Ignorar a primeira e última linhas (cabeçalho e total)
+                    for line in lines[1:]: 
                         condition, occurrences, value = line.strip().split()
                         self.occurrences_list.append((condition, int(occurrences), float(value)))
 
@@ -186,18 +185,18 @@ class DataAnalysisApp:
                 file.write("Situação             Num Ocorrências       Valor da Ocorrência\n")
                 for occurrence in self.occurrences_list:
                     condition, occurrences, value = occurrence
-                    # Alteração: Adicionar um espaço extra para garantir a formatação correta
+                    
                     file.write(f"{condition.ljust(20)} {str(occurrences).ljust(20)} {str(value).ljust(20)}\n")
 
             messagebox.showinfo("Sucesso", "Dados salvos com sucesso.")
 
     def perform_pareto_analysis(self):
-        # Verificar se há ocorrências para análise
+        
         if not self.occurrences_list:
             messagebox.showwarning("Aviso", "Adicione pelo menos uma ocorrência para realizar a análise de Pareto.")
             return
 
-        # Gerar dados com base nas informações inseridas
+        
         data = []
         total_occurrences = 0
         for occurrence in self.occurrences_list:
@@ -209,7 +208,7 @@ class DataAnalysisApp:
         pareto_data_percentage = pareto_data / total_occurrences * 100
         pareto_data_cumulative_percentage = pareto_data_percentage.cumsum()
 
-        # Criar tabela de análise de Pareto
+        
         pareto_table = pd.DataFrame({
             'Situação': pareto_data.index,
             'Num Ocorrências': pareto_data.values,
@@ -217,7 +216,7 @@ class DataAnalysisApp:
             '% Contribuição Acumulada': pareto_data_cumulative_percentage.values
         })
 
-        # Exibir os resultados na janela de rolagem de texto
+        
         result_text_content = "Tabela de Análise de Pareto (Ordem Decrescente):\n"
         result_text_content += "{:<20} {:<15} {:<20} {:<25}\n".format(
             "Situação", "Num Ocorrências", "% Contribuição", "% Contribuição Acumulada"
@@ -232,7 +231,7 @@ class DataAnalysisApp:
         self.result_text.delete(1.0, tk.END)
         self.result_text.insert(tk.END, result_text_content)
 
-        # Opcional: Gráfico de Pareto
+        
         self.plot_pareto_chart(pareto_data)
 
     def plot_pareto_chart(self, pareto_data):
@@ -250,12 +249,12 @@ class DataAnalysisApp:
 
         fig.tight_layout()
 
-        # Adicionar o gráfico à interface gráfica usando NavigationToolbar2Tk
+        
         canvas = FigureCanvasTkAgg(fig, master=self.pareto_chart_frame)
         canvas_widget = canvas.get_tk_widget()
         canvas_widget.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
-        # Adicionar barra de navegação
+        
         toolbar = NavigationToolbar2Tk(canvas, self.pareto_chart_frame)
         toolbar.update()
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
@@ -263,39 +262,25 @@ class DataAnalysisApp:
 
 
     def insert_number(self):
-        # Obter o número inserido
         number_str = self.condition_entry.get()
-
-        # Converter o número para float
         try:
             number = float(number_str)
-            # Adicionar o número à lista
             self.inserted_numbers.append(number)
         except ValueError:
             messagebox.showerror("Erro", "Insira um número válido.")
-
-        # Limpar o campo de entrada
         self.condition_entry.delete(0, tk.END)
 
     def calculate_measures(self):
-        # Verificar se há números para calcular
         if not self.inserted_numbers:
             messagebox.showwarning("Aviso", "Insira pelo menos um número para realizar os cálculos.")
             return
 
-        # Calcular medidas de tendência central e dispersão
         mean = statistics.mean(self.inserted_numbers)
         mode = statistics.mode(self.inserted_numbers)
         median = statistics.median(self.inserted_numbers)
-
-        # Calcular quartis
         quartiles = [np.percentile(self.inserted_numbers, q) for q in [25, 50, 75]]
-
-
-        # Calcular desvio padrão
         std_deviation = statistics.stdev(self.inserted_numbers)
 
-        # Criar tabela de medidas
         measures_table = f"""
         Tabela de Medidas de Tendência Central e Dispersão:
         Medida          Valor
@@ -308,6 +293,28 @@ class DataAnalysisApp:
         Desvio Padrão   {std_deviation:.2f}
         """
 
-        # Exibir os resultados na janela de rolagem de texto
+        
+        frequency_table = self.calculate_frequency_table()
+        measures_table += "\n\nTabela de Distribuição de Frequência:\n"
+        measures_table += frequency_table.to_string(index=False, float_format='%.2f')
+
         self.result_table_text.delete(1.0, tk.END)
         self.result_table_text.insert(tk.END, measures_table)
+
+    def calculate_frequency_table(self):
+        
+        frequency_table = pd.DataFrame({
+            'Intervalo': pd.cut(self.inserted_numbers, bins=10),
+            'Ponto Médio': [(interval.left + interval.right) / 2 for interval in pd.cut(self.inserted_numbers, bins=10)],
+            'Fi': 1
+        })
+
+        
+        frequency_table = frequency_table.groupby('Intervalo').agg({'Ponto Médio': 'mean', 'Fi': 'count'}).reset_index()
+
+       
+        frequency_table['Fr'] = frequency_table['Fi'] / len(self.inserted_numbers)
+        frequency_table['Fr(%)'] = frequency_table['Fr'] * 100
+        frequency_table['Fr acumulado'] = frequency_table['Fr'].cumsum()
+
+        return frequency_table
