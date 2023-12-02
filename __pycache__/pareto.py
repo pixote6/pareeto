@@ -49,7 +49,7 @@ class pareto:
         self.analyze_button = tk.Button(self.pareto1, text="Realizar Análise de Pareto", command=self.perform_pareto_analysis, width=20, height=2, bg="#FFFF00")
         self.analyze_button.pack(pady=10)
 
-        self.result_text = tk.Text(self.pareto1, width=80, height=25)
+        self.result_text = tk.Text(self.pareto1, width=80, height=15)
         self.result_text.pack(pady=10)
 
     def add_occurrence(self):
